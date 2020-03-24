@@ -6,6 +6,7 @@ let gouttes = [];
 let rouge;
 let vert;
 let bleu;
+let vitesse;
 
 function setup() {
   createCanvas(LARGEUR, HAUTEUR);
@@ -13,6 +14,8 @@ function setup() {
   rouge = random(0, 255);
   vert = random(0, 255);
   bleu = random(0, 255);
+
+  vitesse = 1;
 
   setBackground();
 }
@@ -27,7 +30,7 @@ class Goutte {
 
   dessiner() {
 
-    this.taille = this.taille + 1;
+    this.taille = this.taille + vitesse;
 
     ellipse(
       this.x,
@@ -42,13 +45,22 @@ function keyPressed() {
     ajouterUneGoutte();
   } else if (keyCode === DOWN_ARROW) {
     enleverUneGoutte();
+  } else if (keyCode === RIGHT_ARROW) {
+    changerVitesse(1);
+  } else if (keyCode === LEFT_ARROW) {
+    changerVitesse(-1);
   } else if (keyCode === 32) {
     changerDeCouleur();
   }
 }
 
-function ajouterUneGoutte() {
+function changerVitesse(offset) {
+  if (vitesse > 0 || offset > 0) {
+    vitesse += offset;
+  }
+}
 
+function ajouterUneGoutte() {
   let x = random(0, LARGEUR);
   let y = random(0, HAUTEUR);
 
