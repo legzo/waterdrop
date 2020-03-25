@@ -6,7 +6,7 @@ let gouttes = [];
 let rouge;
 let vert;
 let bleu;
-let vitesse;
+let vitesseDeBase;
 
 function setup() {
   createCanvas(LARGEUR, HAUTEUR);
@@ -15,7 +15,7 @@ function setup() {
   vert = random(0, 255);
   bleu = random(0, 255);
 
-  vitesse = 1;
+  vitesseDeBase = 1.5;
 
   setBackground();
 }
@@ -24,13 +24,23 @@ class Goutte {
 
   constructor(x, y) {
     this.taille = 0;
+    this.vitesse = vitesseDeBase * random(.5, 1.5)
+    this.opacity = 1;
+    this.strokeWeight = 4;
     this.x = x;
     this.y = y;
+
+    console.log("New goutte : ", this)
   }
 
   dessiner() {
 
-    this.taille = this.taille + vitesse;
+    this.taille = this.taille + this.vitesse;
+    this.opacity *= .99
+    this.strokeWeight *= .99
+
+    strokeWeight(this.strokeWeight);
+    stroke(`rgba(0,0,0,${this.opacity})`); 
 
     ellipse(
       this.x,
@@ -55,8 +65,8 @@ function keyPressed() {
 }
 
 function changerVitesse(offset) {
-  if (vitesse > 0 || offset > 0) {
-    vitesse += offset;
+  if (vitesseDeBase > 0 || offset > 0) {
+    vitesseDeBase += offset;
   }
 }
 
@@ -71,6 +81,8 @@ function enleverUneGoutte() {
   gouttes.pop();
 }
 
+let throttled = _.throttle(ajouterUneGoutte, 1000);
+
 function draw() {
   setBackground();
 
@@ -78,6 +90,8 @@ function draw() {
 
   gouttes
     .forEach(goutte => goutte.dessiner());
+
+  throttled();       
 }
 
 function changerDeCouleur() {
